@@ -1,5 +1,6 @@
 import express from "express";
 import "dotenv/config";
+import { dbConnect } from "./db/dbConnect.js";
 
 const app = express();
 
@@ -9,6 +10,16 @@ app.get("/", (req, res) => {
   res.send("Welcome to Book Store Project");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}...`);
-});
+const start = async () => {
+  try {
+    await dbConnect(process.env.MONGO_URI);
+    console.log("database connected");
+    app.listen(PORT, () => {
+      console.log(`Server is running on ${PORT}...`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();
